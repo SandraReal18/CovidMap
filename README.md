@@ -1,10 +1,15 @@
 # data-visualization-covid-map
 
-## GOALS:
+### GOALS:
 
-#### Our goal is from https://github.com/Lemoncode/d3js-typescript-examples/tree/master/02-maps/02-pin-location-scale to implement a button to change the covid data used in that repository and current covid data.
+- Place pins on a map based on location.
+- Scale pin radius based on affected number.
+- Spain got canary island that is a territory placed far away, we need to cropt that islands and paste them in a visible place in the map.
+- Create a button to update the information of the two datasets.
 
-## STEPS:
+Our starting point will be from the following repository. https://github.com/Lemoncode/d3js-typescript-examples/tree/master/02-maps/02-pin-location-scale
+
+### STEPS:
 
 #### 
  - The first thing we have had to do is look for the data at https://datos.gob.es/ (With the help of Francisco Florido). We have added this data to _'stats.ts'_
@@ -13,7 +18,7 @@
  <link rel="stylesheet" type="text/css" href="./style.css" />
 ```
 -  We have removed the constants _maxAffected_ and _affectedRadiusScale_ from the code since we were not going to use them. (_index.ts_)
-- We have created a helper function _calculateBasedOnAffectedCases_. Which calculates the maximum number of cases affected by covid and then scaling the data by making a rule of three. (_index.ts_)
+- We have created two helper function _calculateBasedOnAffectedCases_ and  _calcalculateRadiusBasedOnAffectedCases_. Where the maximum affected is calculated, a radius scale is created for the radius of each circumference of the community according to the number of cases in the most affected community, which depends on the number of affected. (_index.ts_)
 ```typescript
     const calculateBasedOnAffectedCases = (comunidad: string, data: any[]) => {
   const entry = data.find((item) => item.name === comunidad);
@@ -25,9 +30,7 @@
   }
   return entry ? (entry.value / max) * 50: 0;
 };
-```
-- The _calcalculateRadiusBasedOnAffectedCases_ function pastes the community name with the value of scaled affected cases. (_index.ts_)
-```typescript
+
 const calculateRadiusBasedOnAffectedCases = (
   comunidad: string,
   data: any[]
@@ -35,7 +38,7 @@ const calculateRadiusBasedOnAffectedCases = (
   return calculateBasedOnAffectedCases(comunidad, data);
 };
 ```
-- To create the circles we have created the constant _updateChart_. It paints the circles in each community with the scaled radius thanks to the two functions that we have created previously. (with the help of Álvaro Jiménez Balmisa) (_index.ts_)
+- To update the graph when the buttons are clicked for this we have implemented the following function (with the help of Álvaro Jiménez Balmisa) (_index.ts_)
 ```typescript
 const updateChart = (data: any[]) => {
   svg.selectAll("circle").remove();
@@ -73,12 +76,14 @@ Then we had to add the following in _index.html_:
     <script src="./index.ts"></script>
 </body>
 ```
-## INSTRUCTIONS TO START IT
+### INSTRUCTIONS TO START IT
 
-#### In order to start it we have to first execute these commands in the terminal to install the packages that we will use:
+In order to start it we have to install npm:
  -  _npm install_
+We install the package to be able to work with maps, the library that contains this projections and the node typings to get require typing
+ -  _npm install @types/topojson-client --save-dev_ 
  -  _npm install d3-composite-projections --save_ 
  -  _npm install @types/node --save-dev_ 
- -  _npm install @types/topojson-client --save-dev_      
+      
 
  #### Once these installations are done to start we have to execute the _npm start_ command and access the localhost to be able to view the results.
